@@ -2,6 +2,7 @@
   "name": "miners-parser",
   "version": "0.1.0",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "puppeteer-core": "^15.5.0"
   },
   "devDependencies": {

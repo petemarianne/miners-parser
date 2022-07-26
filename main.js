@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import cheerio from 'cheerio';
 
 const parseMiners = async () => {
     const miners = [];
@@ -9,6 +10,9 @@ const parseMiners = async () => {
     await page.waitForSelector('#__BVID__43 > tbody > tr.last.table-pin.table-superpin');
     await page.click('#app > div.page > div.mainContent > div > div.miners-body > div.card.miners-card > div.action-bar.bottom-action-bar > button');
     await page.waitForSelector('#__BVID__43 > tbody > tr.last.table-pin.table-superpin');
+    const content = await page.content();
+
+    const $ = cheerio.load(content);
 
     let array = [];
     for (let i = 1; i < 11; i++) {
@@ -38,8 +42,7 @@ const parseMiners = async () => {
                 array.forEach((value, index) => miners[index].chain = value);
                 break;
             case 4:
-                array = await page.evaluate(() => Array.from(document.querySelectorAll(`#__BVID__43 > tbody > tr > td[aria-colindex="4"] > span`), element => element.innerText));
-                array.forEach((value, index) => miners[index].token = value);
+                $(`#__BVID__43 > tbody > tr > td[aria-colindex="4"] > span`).each((index, element) => {miners[index].token = $(element).text()});
                 break;
             case 5:
                 array = await page.evaluate(() => Array.from(document.querySelectorAll(`#__BVID__43 > tbody > tr > td[aria-colindex="5"] > span`), element => {
@@ -61,16 +64,13 @@ const parseMiners = async () => {
                 array.forEach((value, index) => miners[index].fees = value);
                 break;
             case 7:
-                array = await page.evaluate(() => Array.from(document.querySelectorAll(`#__BVID__43 > tbody > tr > td[aria-colindex="7"] > span`), element => element.innerText.trim()));
-                array.forEach((value, index) => miners[index].age = value);
+                $(`#__BVID__43 > tbody > tr > td[aria-colindex="7"] > span`).each((index, element) => {miners[index].age = $(element).text().trim()});
                 break;
             case 8:
-                array = await page.evaluate(() => Array.from(document.querySelectorAll(`#__BVID__43 > tbody > tr > td[aria-colindex="8"] > span`), element => element.innerText.trim()));
-                array.forEach((value, index) => miners[index]['daily %'] = value);
+                $(`#__BVID__43 > tbody > tr > td[aria-colindex="8"] > span`).each((index, element) => {miners[index]['daily %'] = $(element).text().trim()});
                 break;
             case 9:
-                array = await page.evaluate(() => Array.from(document.querySelectorAll(`#__BVID__43 > tbody > tr > td[aria-colindex="9"] > span`), element => element.innerText.trim()));
-                array.forEach((value, index) => miners[index].TVL = value);
+                $(`#__BVID__43 > tbody > tr > td[aria-colindex="9"] > span`).each((index, element) => {miners[index].TVL = $(element).text().trim()});
                 break;
             case 10:
                 array = await page.evaluate(() => Array.from(document.querySelectorAll(`#__BVID__43 > tbody > tr > td[aria-colindex="10"]`), element => {
@@ -89,3 +89,5 @@ const parseMiners = async () => {
 
     return miners;
 }
+
+parseMiners();
