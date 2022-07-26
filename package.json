@@ -1,6 +1,11 @@
 {
+  "name": "miners-parser",
+  "version": "0.1.0",
   "dependencies": {
-    "axios": "^0.27.2",
-    "cheerio": "^1.0.0-rc.12"
-  }
+    "puppeteer-core": "^15.5.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^15.5.0"
+  },
+  "type": "module"
 }
